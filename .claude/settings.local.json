@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "mcp__tavily__tavily_search",
+      "Bash(pnpm init *)",
+      "Bash(pnpm add *)",
+      "Bash(pnpm build *)",
+      "Bash(npx tsc *)",
+      "Bash(pnpm dev *)",
+      "Bash(kill %1)",
+      "Bash(wait)",
+      "Skill(update-config)"
+    ]
+  }
+}
