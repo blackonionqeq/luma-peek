@@ -11,11 +11,14 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite playground",
     "build": "tsdown",
-    "test": "vitest"
+    "test": "vitest",
+    "prepublishOnly": "pnpm build"
   },
   "license": "MIT",
   "packageManager": "pnpm@10.33.0",
@@ -24,5 +27,15 @@
     "typescript": "^6.0.3",
     "vite": "^8.0.16",
     "vitest": "^4.1.8"
-  }
+  },
+  "keywords": [
+    "image-viewer",
+    "lightbox",
+    "gallery"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blackonionqeq/luma-peek.git"
+  },
+  "sideEffects": false
 }
