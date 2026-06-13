@@ -8,11 +8,15 @@ export const viewerStyles = `
   justify-content: center;
   background: rgba(0, 0, 0, 0.9);
   opacity: 0;
-  transition: opacity 0.2s ease;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
 .lp-overlay[data-open] {
   opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .lp-image {
