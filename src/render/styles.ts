@@ -25,6 +25,7 @@ export const viewerStyles = `
   object-fit: contain;
   user-select: none;
   -webkit-user-drag: none;
+  touch-action: none;
 }
 
 .lp-nav {
@@ -38,14 +39,14 @@ export const viewerStyles = `
   height: 44px;
   border: none;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.5);
   color: #fff;
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
 .lp-nav:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.7);
 }
 
 .lp-nav--prev {
@@ -71,14 +72,14 @@ export const viewerStyles = `
   height: 40px;
   border: none;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.5);
   color: #fff;
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
 .lp-close:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.7);
 }
 
 .lp-image {
