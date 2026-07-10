@@ -17,6 +17,7 @@ export const viewerStyles = `
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
+  touch-action: none;
 }
 
 .lp-image {

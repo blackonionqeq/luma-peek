@@ -18,7 +18,7 @@ luma-peek is a framework-agnostic image viewer library. Zero runtime dependencie
 ### Layer structure (src/)
 
 - **core/** — Framework-free logic: event emitter, viewer state machine. No DOM knowledge.
-- **gestures/** — Pointer/touch event handling (double-click zoom, future: drag-to-pan, pinch-zoom, scroll-zoom). Operates on elements passed in, doesn't create DOM.
+- **gestures/** — Pointer/touch event handling (double-click zoom, drag-to-pan, pinch-zoom; future: scroll-zoom). Operates on elements passed in, doesn't create DOM.
 - **render/** — DOM creation, CSS styles (injected via `<style>`), SVG icons. Produces a `ViewerElements` struct.
 - **mount/** — Container strategy: either plain `<div>` or Shadow DOM host. Returns a container (`HTMLElement | ShadowRoot`) that render writes into.
 - **index.ts** — Public API surface. Wires all layers together in `createViewer()`.
