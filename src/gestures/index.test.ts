@@ -255,6 +255,29 @@ describe('zoom controls', () => {
   })
 })
 
+describe('reset', () => {
+  it('clears the transform but keeps handling events', () => {
+    dblclick(CENTER_X, CENTER_Y)
+    expect(parseTransform()).not.toBeNull()
+
+    controls.reset()
+    expect(parseTransform()).toBeNull()
+
+    dblclick(CENTER_X, CENTER_Y)
+    expect(parseTransform()).not.toBeNull()
+  })
+
+  it('abandons an in-progress drag', () => {
+    dblclick(CENTER_X, CENTER_Y)
+    pointer('pointerdown', 1, 100, 100)
+    pointer('pointermove', 1, 150, 150)
+
+    controls.reset()
+    pointer('pointermove', 1, 300, 300)
+    expect(parseTransform()).toBeNull()
+  })
+})
+
 describe('detach', () => {
   it('resets the transform and stops handling events', () => {
     dblclick(CENTER_X, CENTER_Y)

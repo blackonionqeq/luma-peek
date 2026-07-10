@@ -128,12 +128,14 @@ export function createViewer(options: ViewerOptions = {}): Viewer {
   function next() {
     if (state.items.length <= 1) return
     state.currentIndex = (state.currentIndex + 1) % state.items.length
+    gestures?.reset()
     renderCurrentImage()
   }
 
   function prev() {
     if (state.items.length <= 1) return
     state.currentIndex = (state.currentIndex - 1 + state.items.length) % state.items.length
+    gestures?.reset()
     renderCurrentImage()
   }
 

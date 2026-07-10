@@ -6,6 +6,7 @@ const ZOOM_STEP = 1.5
 export interface GestureControls {
   zoomIn(): void
   zoomOut(): void
+  reset(): void
   detach(): void
 }
 
@@ -228,6 +229,13 @@ export function attachGestures(container: HTMLElement, image: HTMLElement): Gest
     applyTransform()
   }
 
+  function reset() {
+    pointers.clear()
+    mode = 'idle'
+    image.style.transition = ''
+    resetTransform()
+  }
+
   image.addEventListener('dblclick', handleDblClick)
   container.addEventListener('pointerdown', handlePointerDown)
   container.addEventListener('pointermove', handlePointerMove)
@@ -242,10 +250,8 @@ export function attachGestures(container: HTMLElement, image: HTMLElement): Gest
     container.removeEventListener('pointerup', handlePointerUp)
     container.removeEventListener('pointercancel', handlePointerUp)
     window.removeEventListener('click', handleClickCapture, true)
-    pointers.clear()
-    mode = 'idle'
-    resetTransform()
+    reset()
   }
 
-  return { zoomIn, zoomOut, detach }
+  return { zoomIn, zoomOut, reset, detach }
 }
