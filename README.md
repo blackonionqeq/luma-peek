@@ -64,8 +64,9 @@ Creates a viewer instance.
 ## Interactions
 
 - **Double-click** — Toggle zoom (1x ↔ 2x)
+- **Pinch** — Two-finger zoom (1x–8x), snaps back when pinched below 1x
+- **Drag** — Pan when zoomed; works anywhere on the overlay, not just the image
 - **Scroll wheel** — Zoom in/out (planned)
-- **Drag** — Pan when zoomed (planned)
 - **Esc** — Close
 - **Click backdrop** — Close
 - **Arrow keys** — Navigate gallery
