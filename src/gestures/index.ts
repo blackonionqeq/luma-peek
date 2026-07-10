@@ -1,6 +1,13 @@
 const MIN_SCALE = 1
 const MAX_SCALE = 8
 const DRAG_THRESHOLD = 3
+const ZOOM_STEP = 1.5
+
+export interface GestureControls {
+  zoomIn(): void
+  zoomOut(): void
+  detach(): void
+}
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value))
@@ -15,7 +22,7 @@ function capturePointer(el: HTMLElement, pointerId: number) {
   }
 }
 
-export function attachGestures(container: HTMLElement, image: HTMLElement): () => void {
+export function attachGestures(container: HTMLElement, image: HTMLElement): GestureControls {
   let scale = 1
   let translateX = 0
   let translateY = 0
@@ -198,6 +205,29 @@ export function attachGestures(container: HTMLElement, image: HTMLElement): () =
     e.stopPropagation()
   }
 
+  function containerCenter(): { x: number; y: number } {
+    const rect = container.getBoundingClientRect()
+    return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
+  }
+
+  function zoomIn() {
+    const c = containerCenter()
+    zoomAround(c.x, c.y, clamp(scale * ZOOM_STEP, MIN_SCALE, MAX_SCALE))
+    applyTransform()
+    image.style.cursor = 'grab'
+  }
+
+  function zoomOut() {
+    const next = scale / ZOOM_STEP
+    if (next <= 1) {
+      resetTransform()
+      return
+    }
+    const c = containerCenter()
+    zoomAround(c.x, c.y, next)
+    applyTransform()
+  }
+
   image.addEventListener('dblclick', handleDblClick)
   container.addEventListener('pointerdown', handlePointerDown)
   container.addEventListener('pointermove', handlePointerMove)
@@ -205,7 +235,7 @@ export function attachGestures(container: HTMLElement, image: HTMLElement): () =
   container.addEventListener('pointercancel', handlePointerUp)
   window.addEventListener('click', handleClickCapture, true)
 
-  return () => {
+  function detach() {
     image.removeEventListener('dblclick', handleDblClick)
     container.removeEventListener('pointerdown', handlePointerDown)
     container.removeEventListener('pointermove', handlePointerMove)
@@ -216,4 +246,6 @@ export function attachGestures(container: HTMLElement, image: HTMLElement): () =
     mode = 'idle'
     resetTransform()
   }
+
+  return { zoomIn, zoomOut, detach }
 }

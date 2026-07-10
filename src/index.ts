@@ -2,7 +2,7 @@ import { Emitter } from './core/emitter'
 import { createState, type ImageItem } from './core/state'
 import { createDOM, destroyDOM, type ViewerElements } from './render/dom'
 import { mount, unmount } from './mount'
-import { attachGestures } from './gestures'
+import { attachGestures, type GestureControls } from './gestures'
 
 export interface ViewerOptions {
   shadow?: boolean
@@ -33,7 +33,7 @@ export function createViewer(options: ViewerOptions = {}): Viewer {
   let elements: ViewerElements | null = null
   let hostEl: HTMLElement | null = null
   let containerEl: HTMLElement | ShadowRoot | null = null
-  let detachGestures: (() => void) | null = null
+  let gestures: GestureControls | null = null
   let keyHandler: ((e: KeyboardEvent) => void) | null = null
 
   function ensureDOM() {
@@ -50,6 +50,8 @@ export function createViewer(options: ViewerOptions = {}): Viewer {
     elements.closeBtn.addEventListener('click', close)
     elements.prevBtn.addEventListener('click', prev)
     elements.nextBtn.addEventListener('click', next)
+    elements.zoomInBtn.addEventListener('click', () => gestures?.zoomIn())
+    elements.zoomOutBtn.addEventListener('click', () => gestures?.zoomOut())
   }
 
   function updateNavButtons() {
@@ -92,12 +94,14 @@ export function createViewer(options: ViewerOptions = {}): Viewer {
       elements!.overlay.setAttribute('data-open', '')
     })
 
-    detachGestures = attachGestures(elements!.overlay, elements!.image)
+    gestures = attachGestures(elements!.overlay, elements!.image)
 
     keyHandler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') close()
       if (e.key === 'ArrowLeft') prev()
       if (e.key === 'ArrowRight') next()
+      if (e.key === '+' || e.key === '=') gestures?.zoomIn()
+      if (e.key === '-' || e.key === '_') gestures?.zoomOut()
     }
     document.addEventListener('keydown', keyHandler)
 
@@ -109,8 +113,8 @@ export function createViewer(options: ViewerOptions = {}): Viewer {
     if (!state.isOpen) return
 
     elements?.overlay.removeAttribute('data-open')
-    detachGestures?.()
-    detachGestures = null
+    gestures?.detach()
+    gestures = null
 
     if (keyHandler) {
       document.removeEventListener('keydown', keyHandler)

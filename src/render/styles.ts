@@ -62,7 +62,8 @@ export const viewerStyles = `
   display: none;
 }
 
-.lp-close {
+.lp-close,
+.lp-zoom {
   position: absolute;
   top: 16px;
   right: 16px;
@@ -79,8 +80,17 @@ export const viewerStyles = `
   transition: background 0.15s ease;
 }
 
-.lp-close:hover {
+.lp-close:hover,
+.lp-zoom:hover {
   background: rgba(0, 0, 0, 0.7);
+}
+
+.lp-zoom--in {
+  right: 64px;
+}
+
+.lp-zoom--out {
+  right: 112px;
 }
 
 .lp-image {

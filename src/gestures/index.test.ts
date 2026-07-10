@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { attachGestures } from './index'
+import { attachGestures, type GestureControls } from './index'
 
 // simulated image layout: 480x320 at (400, 200) → center (640, 360)
 const CENTER_X = 640
@@ -7,7 +7,7 @@ const CENTER_Y = 360
 
 let container: HTMLElement
 let image: HTMLImageElement
-let detach: () => void
+let controls: GestureControls
 
 function parseTransform(): { tx: number; ty: number; scale: number } | null {
   const t = image.style.transform
@@ -59,11 +59,25 @@ beforeEach(() => {
     } as DOMRect
   }
 
-  detach = attachGestures(container, image)
+  // container fills a 1280x720 viewport, so its center matches the image's
+  container.getBoundingClientRect = () =>
+    ({
+      left: 0,
+      top: 0,
+      right: 1280,
+      bottom: 720,
+      width: 1280,
+      height: 720,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
+    }) as DOMRect
+
+  controls = attachGestures(container, image)
 })
 
 afterEach(() => {
-  detach()
+  controls.detach()
   container.remove()
 })
 
@@ -203,12 +217,50 @@ describe('click suppression', () => {
   })
 })
 
+describe('zoom controls', () => {
+  it('zoomIn steps the scale by 1.5x around the container center', () => {
+    controls.zoomIn()
+    expect(parseTransform()).toEqual({ tx: 0, ty: 0, scale: 1.5 })
+
+    controls.zoomIn()
+    expect(parseTransform()!.scale).toBeCloseTo(2.25)
+  })
+
+  it('zoomIn clamps at the maximum scale', () => {
+    for (let i = 0; i < 10; i++) controls.zoomIn()
+    expect(parseTransform()!.scale).toBe(8)
+  })
+
+  it('zoomOut keeps the container center fixed', () => {
+    dblclick(700, 300) // scale 2, translate (-60, 60)
+    controls.zoomOut()
+
+    // zooming around the container center scales the translate by the
+    // ratio (4/3) / 2 = 2/3
+    const t = parseTransform()!
+    expect(t.scale).toBeCloseTo(4 / 3)
+    expect(t.tx).toBeCloseTo(-40)
+    expect(t.ty).toBeCloseTo(40)
+  })
+
+  it('zoomOut resets fully once the scale would reach 1x', () => {
+    controls.zoomIn()
+    controls.zoomOut()
+    expect(parseTransform()).toBeNull()
+  })
+
+  it('zoomOut at scale 1 stays reset', () => {
+    controls.zoomOut()
+    expect(parseTransform()).toBeNull()
+  })
+})
+
 describe('detach', () => {
   it('resets the transform and stops handling events', () => {
     dblclick(CENTER_X, CENTER_Y)
     expect(parseTransform()).not.toBeNull()
 
-    detach()
+    controls.detach()
     expect(parseTransform()).toBeNull()
 
     dblclick(CENTER_X, CENTER_Y)
